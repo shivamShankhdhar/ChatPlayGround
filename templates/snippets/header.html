@@ -1,0 +1,72 @@
+{% load static %}
+<style>
+    .font-size{
+        font-size:20px;
+        /* margin-top: 10px; */
+    }
+    </style>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Chat Play Ground </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav  col col-9">
+            {% if user.is_authenticated %}
+            <li class="nav-item active">
+              <a class="nav-link" href="#"> Feed <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Friends</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Friend Request</a>
+            </li>
+            {% endif  %}
+            <!-- <li class="nav-item">
+              <a class="nav-link " href="#" tabindex="-1" ></a>
+            </li> -->
+          </ul>
+          <ul class="navbar-nav  col-3">
+              {% if user.is_authenticated %}
+             
+              <li class="nav-item">
+                <a href="#" class=" nav-link active">
+                    <i class="far fa-bell font-size"></i>  <span class="badge badge-success badge-pill">0</span>
+                    
+                </a>
+            </li>
+    
+            <li class="nav-item">
+                <a href="#" class=" nav-link active">
+                    <i class="far fa-comment font-size"></i>  <span class="badge badge-success badge-pill">0</span>
+                    
+                </a>
+            </li>
+    
+            <!-- <li class="nav-item">
+                <a class="nav-link active" href="#" ><i class="far fa-bell"></i> Messages</a>
+            </li> -->
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                   <img src="{{request.user.profile_image.url }}"  class="border rounded-circle" width ="30" height= "30"  alt="">
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="#"><i class="far fa-user-circle"></i> Profile</a>
+                    <!-- <a class="dropdown-item" href="#"><i class="fas fa-cog"></i> Notifications</a>
+                    <a class="dropdown-item" href="#"><i class="fas fa-cog"></</a> -->
+                    <a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+              </li>
+              {% else %}
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'login' %}" > Login <i class="fas fa-sign-in-alt"></i></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'register' %}" > Sign Up <i class="fas fa-user-plus"></i></a>
+                </li>
+              {% endif %}
+          </ul>
+        </div>
+       
+      </nav>
