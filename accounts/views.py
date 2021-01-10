@@ -1,7 +1,7 @@
 
 from django.shortcuts import render, redirect
 
-from django.http import HttpResponse
+from django.http import HttpResponse, request
 
 # FORMS 
 from accounts.forms import AccountAuthenticationForm, RegistrationForm
@@ -120,3 +120,16 @@ def account_view(request, *args, **kwargs):
 
 
 # search functionality
+def account_search_view(request, *args, **kwargs):
+    context = {}
+    if request.method == "GET":
+        search_query = request.GET.get("q")
+        if len(search_query) > 0:
+            search_results = Account.objects.filter(email__icontains=search_query).filter(username__icontains=search_query).distinct()
+            user = request.user
+            accounts = [] # [(account1, True), (account2, False), ...]
+            for account in search_results:
+                accounts.append((account, False)) # you have no friends yet
+            context['accounts'] = accounts
+                
+    return render(request, "accounts/search_result.html", context)

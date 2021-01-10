@@ -12,7 +12,7 @@
         </button>
         
         <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav  col col-10">
+          <ul class="navbar-nav  col col-9">
             {% if user.is_authenticated %}
             <li class="nav-item active">
               <a class="nav-link" href="#"> Feed <span class="sr-only">(current)</span></a>
@@ -27,12 +27,12 @@
             <!-- <li class="nav-item">
               <a class="nav-link " href="#" tabindex="-1" ></a>
             </li> -->
-            <form class="d-flex">
-                <input class="form-control me-2" name = "friend_search" type="search" placeholder="Search friends..." aria-label="Search" style="width: 20rem;margin-left: 10px; outline: none;">
+            <form class="d-flex" onsubmit= "return executeQuery();">
+                <input class="form-control me-2" name="friend_search" type="search" placeholder="Search friends..." aria-label="Search" style="width: 20rem;margin-left: 10px; outline: none;" id="id_q_small">
                 <button class="btn btn-primary btn-sm" type="submit" style="margin-left: 10px;width: 100px;border:none">Search</button>
               </form>
           </ul>
-          <ul class="navbar-nav  col-2  justify-content end row">
+          <ul class="navbar-nav  col-3 justify-content end row">
               {% if user.is_authenticated %}
               <li class="nav-item dropdown" >
                 <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -77,3 +77,11 @@
         </div>
        
       </nav>
+
+<script type="text/javascript">
+    function executeQuery(){
+        var query = document.getElementById("id_q_small").value
+        window.location.replace("{% url 'search' %}?q=" + query)
+        return false
+    }
+</script>
