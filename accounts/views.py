@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, request
 
 # FORMS 
-from accounts.forms import AccountAuthenticationForm, RegistrationForm
+from accounts.forms import AccountAuthenticationForm, RegistrationForm, AccountUpdateForm
 
 # IMPORTED FOR CREATING LOGIN, LOGOUT AND AUTHENTICATING TO THE USER 
 from django.contrib.auth import login, authenticate, logout
@@ -133,3 +133,44 @@ def account_search_view(request, *args, **kwargs):
             context['accounts'] = accounts
                 
     return render(request, "accounts/search_result.html", context)
+
+
+
+def edit_account_view(request, *args, **kwargs):
+    if not request.user.is_authenticated:
+            return redirect("login")
+    user_id = kwargs.get("user_id")
+    account = Account.objects.get(pk=user_id)
+    if account.pk != request.user.pk:
+        return HttpResponse("You cannot edit someone elses profile.")
+    context = {}
+    if request.POST:
+        form = AccountUpdateForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            new_username = form.cleaned_data['username']
+            return redirect("accounts:view", user_id=account.pk)
+        else:
+            form = AccountUpdateForm(request.POST, instance=request.user,
+                initial={
+                    "id": account.pk,
+                    "email": account.email, 
+                    "username": account.username,
+                    "profile_image": account.profile_image,
+                    "hide_email": account.hide_email,
+                }
+            )
+            context['form'] = form
+    else:
+        form = AccountUpdateForm(
+            initial={
+                    "id": account.pk,
+                    "email": account.email, 
+                    "username": account.username,
+                    "profile_image": account.profile_image,
+                    "hide_email": account.hide_email,
+                }
+            )
+        context['form'] = form
+    context['DATA_UPLOAD_MAX_MEMORY_SIZE'] = settings.DATA_UPLOAD_MAX_MEMORY_SIZE
+    return render(request, "accounts/edit_account.html", context)
