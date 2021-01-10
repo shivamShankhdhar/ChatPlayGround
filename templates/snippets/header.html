@@ -12,7 +12,7 @@
         </button>
         
         <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav  col col-9">
+          <ul class="navbar-nav  col col-10">
             {% if user.is_authenticated %}
             <li class="nav-item active">
               <a class="nav-link" href="#"> Feed <span class="sr-only">(current)</span></a>
@@ -27,20 +27,36 @@
             <!-- <li class="nav-item">
               <a class="nav-link " href="#" tabindex="-1" ></a>
             </li> -->
+            <form class="d-flex">
+                <input class="form-control me-2" name = "friend_search" type="search" placeholder="Search friends..." aria-label="Search" style="width: 20rem;margin-left: 10px; outline: none;">
+                <button class="btn btn-primary btn-sm" type="submit" style="margin-left: 10px;width: 100px;border:none">Search</button>
+              </form>
           </ul>
-          <ul class="navbar-nav  col-3">
+          <ul class="navbar-nav  col-2  justify-content end row">
               {% if user.is_authenticated %}
+              <li class="nav-item dropdown" >
+                <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                   <img src="{{request.user.profile_image.url }}"  class="border rounded-circle" width ="30" height= "30"  alt="">
+                </a>
+                <div class="dropdown-menu dropstart" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{% url 'accounts:view' user_id=request.user.id %}"><i class="far fa-user-circle"></i> My Profile</a>
+                    <!-- <a class="dropdown-item" href="#"><i class="fas fa-cog"></i> Notifications</a>
+                    <a class="dropdown-item" href="#"><i class="fas fa-cog"></</a> -->
+                    <a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+              </li>
              
               <li class="nav-item">
+                  <!-- notifications  -->
                 <a href="#" class=" nav-link active">
-                    <i class="far fa-bell font-size"></i>  <span class="badge badge-success badge-pill">0</span>
+                    <i class="far fa-bell font-size"></i>  <span class="badge badge-primary badge-pill">0</span>
                     
                 </a>
             </li>
     
             <li class="nav-item">
+                <!-- messages  -->
                 <a href="#" class=" nav-link active">
-                    <i class="far fa-comment font-size"></i>  <span class="badge badge-success badge-pill">0</span>
+                    <i class="far fa-comment font-size"></i>  <span class="badge badge-primary badge-pill">0</span>
                     
                 </a>
             </li>
@@ -48,16 +64,7 @@
             <!-- <li class="nav-item">
                 <a class="nav-link active" href="#" ><i class="far fa-bell"></i> Messages</a>
             </li> -->
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                   <img src="{{request.user.profile_image.url }}"  class="border rounded-circle" width ="30" height= "30"  alt="">
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="{% url 'accounts:view' user_id=request.user.id %}"><i class="far fa-user-circle"></i> My Profile</a>
-                    <!-- <a class="dropdown-item" href="#"><i class="fas fa-cog"></i> Notifications</a>
-                    <a class="dropdown-item" href="#"><i class="fas fa-cog"></</a> -->
-                    <a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
-              </li>
+            
               {% else %}
                 <li class="nav-item">
                     <a class="nav-link active" href="{% url 'login' %}" > Login <i class="fas fa-sign-in-alt"></i></a>

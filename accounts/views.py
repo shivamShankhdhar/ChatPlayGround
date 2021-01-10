@@ -118,3 +118,5 @@ def account_view(request, *args, **kwargs):
         return render(request, template_name, context)
 
 
+
+# search functionality
