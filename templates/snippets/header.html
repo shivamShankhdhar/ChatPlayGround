@@ -53,7 +53,7 @@
                    <img src="{{request.user.profile_image.url }}"  class="border rounded-circle" width ="30" height= "30"  alt="">
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="#"><i class="far fa-user-circle"></i> Profile</a>
+                    <a class="dropdown-item" href="{% url 'accounts:view' user_id=request.user.id %}"><i class="far fa-user-circle"></i> My Profile</a>
                     <!-- <a class="dropdown-item" href="#"><i class="fas fa-cog"></i> Notifications</a>
                     <a class="dropdown-item" href="#"><i class="fas fa-cog"></</a> -->
                     <a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
