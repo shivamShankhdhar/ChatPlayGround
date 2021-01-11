@@ -162,6 +162,8 @@ def edit_account_view(request, *args, **kwargs):
     if request.POST:
         form = AccountUpdateForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
+            #delete old profile image so the name preserved
+            account.profile_image.delete()
             form.save()
             new_username = form.cleaned_data['username']
             return redirect("accounts:view", user_id=account.pk)
