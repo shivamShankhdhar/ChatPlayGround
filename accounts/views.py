@@ -1,19 +1,30 @@
 
 from django.shortcuts import render, redirect
-
 from django.http import HttpResponse, request
-
 # FORMS 
 from accounts.forms import AccountAuthenticationForm, RegistrationForm, AccountUpdateForm
-
 # IMPORTED FOR CREATING LOGIN, LOGOUT AND AUTHENTICATING TO THE USER 
 from django.contrib.auth import login, authenticate, logout, views
-
 # imported for BASE_URL
 from django.conf import settings 
-
 # ACCOUNTS MODELS
 from accounts.models import Account
+
+#required for image cropping and saving
+
+from django.core.files.storage import FileSystemStorage, default_storage
+# from django.core.files.storage import FileSystemStorage
+import os
+import cv2
+import json
+import base64
+# import requests
+from django.core import files
+
+TEMP_PROFILE_IMAGE_NAME = "temp_profile_image.png"
+
+
+# views 
 
 def register_view(request, *args, **kwargs):
     template_name = 'accounts/register.html'
@@ -130,11 +141,11 @@ def account_search_view(request, *args, **kwargs):
             accounts = [] # [(account1, True), (account2, False), ...]
             for account in search_results:
                 accounts.append((account, False)) # you have no friends yet
-        context['accounts'] = accounts
+            context['accounts'] = accounts
         
     return render(request, "accounts/search_result.html", context)
 
-# views
+# views commentd 
 """
 context = {}
 	if request.method == "GET":
@@ -191,3 +202,63 @@ def edit_account_view(request, *args, **kwargs):
         context['form'] = form
     context['DATA_UPLOAD_MAX_MEMORY_SIZE'] = settings.DATA_UPLOAD_MAX_MEMORY_SIZE
     return render(request, "accounts/edit_account.html", context)
+
+
+def save_temp_profile_image_from_base64String(imageString, user):
+    INCORRECT_PADDING_EXCEPTION = "Incorrect padding"
+    try:
+        if not os.path.exists(settings.TEMP):
+            os.mkdir(settings.TEMP)
+        if not os.path.exists( f"{settings.TEMP}/{user.pk}" ):
+            os.mkdir( f"{settings.TEMP}/{user.pk}" )
+        url = os.path.join(f"{settings.TEMP}/{user.pk}", TEMP_PROFILE_IMAGE_NAME)
+        storage = FileSystemStorage(location = url)
+        image = base64.b64decode(imageString)
+        with storage.open('', 'wb+') as destination:
+            destination.write(image)
+            destination.close()
+        return url
+    except Exception as e:
+        if str(e) == INCORRECT_PADDING_EXCEPTION:
+            imageString += "=" + ({4 - ( len(imageString) % 4) % 4 })
+            return save_temp_profile_image_from_base64String(imageString, user)
+    return None
+
+# croping image with cv2 
+def crop_image(request, *args, **kwargs):
+    payload = {}
+    user = request.user
+    if request.POST and user.is_authenticated:
+        try:
+            imageString = request.POST.get("image")
+            url = save_temp_profile_image_from_base64String(imageString, user)
+            img = cv2.imread(url)
+
+            #  4 parameters of croped image 
+            cropX = int(float(str(request.POST.get("cropX"))))  # crpopX == bottom left x coordinate
+            cropY= int(float(str(request.POST.get("cropY"))))  # crpopY == bottom left y coordinate
+            cropwidth = int(float(str(request.POST.get("cropwidth")))) # width
+            cropheight = int(float(str(request.POST.get("cropheight")))) # height
+
+            # checking for negative
+            if cropX < 0 :
+                cropX = 0
+            if cropY < 0:
+                cropY = 0
+            crop_img = img[cropY:cropY + cropheight, cropX:cropX + cropwidth] # this open cv2 stuf
+            cv2.imwrite(url, crop_img)
+
+            user.profile_image.delete()
+            user.profile_image.save("profile_image.png", files.File(open(url, "rb")))
+            user.save()
+
+            payload["result"] = "Success"
+            payload["cropped_profile_image"] = user.profile_image.url
+            # removing temp image 
+            os.remove(url)
+
+
+        except Exception as e:
+            payload["result"] = "error"
+            payload["exception"]  = str(e)
+    return HttpResponse(json.dumps(payload), content_type = "application/json")

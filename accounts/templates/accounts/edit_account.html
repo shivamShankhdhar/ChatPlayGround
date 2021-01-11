@@ -3,7 +3,6 @@
 
 {% block content %}
 
-
 <style type="text/css">
 	.image-container{
 		max-width: 250px;
@@ -92,9 +91,19 @@
 
 
 <script type="text/javascript">
-// function run on page load
+var cropper;
+var imageFile;
+var base64ImageString;
+var cropX;
+var cropY;
+var cropwidth;
+var cropheight;
+
     enableImageOverlay()
-    
+	/*
+		 called when a new image is selected from file chooser dialog
+	*/
+
 	function readURL(input){
 		if(input.files && input.files[0]){
 			var reader = new FileReader()
@@ -103,12 +112,43 @@
 				var image = e.target.result
 				var imageField = document.getElementById("id_profile_image_display")
 				imageField.src = image
-			}
+				cropper = new Cropper(imageField, {
+					aspectRatio: 1/1,
+					crop(event){
+						console.log("Crop Start......")
+						console.log("x: " +  event.detail.x")
+						console.log("y: " + event.detail.y")
+						console.log("x: " + event.detail.width")
+						console.log("x: " + event.detail.height")
+						setImageCropProperties(
+							image,
+							event.detail.x,
+							event.detail.y,
+							event.detail.width,
+							event.detail.height,
+						)
+					}
+				})
+			};
 
 			reader.readAsDataURL(input.files[0])
 		}
     }
-    
+	function isImageSizeValid(image){
+		// console.log
+	}
+	function cropImage(image, x, y, width, height){
+		console.log(image)
+	}
+	function setImageCropProperties(image, x, y, width, height){
+		imageFile = image
+		cropX = x
+		cropY = y
+		cropwidth = width
+		cropheight = height
+	}
+
+
     function enableImageOverlay(){
         var text = document.getElementById("id_text")
         text.style.backgroundColor = "#0066ff"
@@ -194,8 +234,7 @@
 
 		var checkMark = document.getElementById("id_confirm")
 		checkMark.addEventListener("click", function(event){
-			// ToDo
-			enableImageOverlay()
+			cropImage(imageFile, cropX, cropY, cropwidth, cropheight)
 		})
 
 		var cancelEditImage = document.getElementById("id_cancel")
