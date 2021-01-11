@@ -7,7 +7,7 @@ from django.http import HttpResponse, request
 from accounts.forms import AccountAuthenticationForm, RegistrationForm, AccountUpdateForm
 
 # IMPORTED FOR CREATING LOGIN, LOGOUT AND AUTHENTICATING TO THE USER 
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import login, authenticate, logout, views
 
 # imported for BASE_URL
 from django.conf import settings 
@@ -130,11 +130,26 @@ def account_search_view(request, *args, **kwargs):
             accounts = [] # [(account1, True), (account2, False), ...]
             for account in search_results:
                 accounts.append((account, False)) # you have no friends yet
-            context['accounts'] = accounts
-                
+        context['accounts'] = accounts
+        
     return render(request, "accounts/search_result.html", context)
 
-
+# views
+"""
+context = {}
+	if request.method == "GET":
+		search_query = request.GET.get("q")
+		if len(search_query) > 0:
+			search_results = Account.objects.filter(email__icontains=search_query).filter(username__icontains=search_query).distinct()
+			user = request.user
+			accounts = [] # [(account1, True), (account2, False), ...]
+			for account in search_results:
+				accounts.append((account, False)) # you have no friends yet
+			context['accounts'] = accounts
+				
+	return render(request, "accounts/search_results.html", context)
+"""
+# end views
 
 def edit_account_view(request, *args, **kwargs):
     if not request.user.is_authenticated:
