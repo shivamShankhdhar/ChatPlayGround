@@ -23,6 +23,7 @@ urlpatterns = [
     path('', home_screen_view, name = 'home'),
     path('accounts/', include('accounts.urls', namespace = 'accounts')),
     path('admin/', admin.site.urls),
+    path('friend/', include('friend.urls', namespace = 'friend')),
     path('login/', login_view, name = 'login'),
     path('logout/', logout_view, name = 'logout'),
     path('register/', register_view, name = 'register'),

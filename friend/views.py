@@ -30,7 +30,7 @@ def send_Friend_request(request, *args, **kwargs):
 				friend_request.save()
 				payload['response'] = "Great! Friend request sent."
 
-			if payload['response'] = None:
+			if payload['response'] == None:
 				payload['response'] = "Oops! Something went wrong."
 		else:
 			payload["response"] = "Oops! Unable to send friend request"
