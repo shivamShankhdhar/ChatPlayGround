@@ -28,10 +28,10 @@ def send_Friend_request(request, *args, **kwargs):
 			except FriendRequest.DoesNotExists:
 				friend_request = FriendRequest(sender = sender, receiver = receiver)
 				friend_request.save()
-				payload['response'] = "Great! Friend request sent."
+				payload['response'] = "Friend request sent."
 
 			if payload['response'] == None:
-				payload['response'] = "Oops! Something went wrong."
+				payload['response'] = "Something went wrong."
 		else:
 			payload["response"] = "Oops! Unable to send friend request"
 	else:

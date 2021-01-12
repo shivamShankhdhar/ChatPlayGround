@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block content %}
+{% include 'friend/snippets/send_friend_request.html' %}
 
 <style type="text/css">
 	.image-container{
@@ -189,7 +190,7 @@
 </div>
 
 
-<script type="text/javascript">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js">
 
 	// called from base_js.html
 	//preloadImage("{{profile_image|safe}}", 'id_profile_image')
@@ -243,10 +244,39 @@
 	function triggerDeclineFriendRequest(friend_request_id){
 		//declineFriendRequest(friend_request_id, onFriendRequestDeclined)
 	}
+
+	function sendFriendRequest(id, uiUpdateFunction){
+		payload = {
+			"csrfmiddlewaretoken": "{{ csrf_token }}",
+			"receiver_user_id": id,
+		}
+		$.ajax()({
+			type: 'POST',
+			dataType: "json",
+			url: "{% url 'friend:friend-request' %}",
+			timeout: 5000,
+			data: payload,
+			success: function(data) {
+				console.log("SUCCESS", data)
+				if(data['response'] == "Friend request sent."){
+					// ui is updated
+				}
+				else if(data['response'] != null){
+					alert(data['response'])
+				}
+			},
+			error: function(data) {
+				console.error("ERROR...", data)
+				alert("Something went wrong.")
+			},
+			complete: function(data){
+				uiUpdateFunction()
+			}
+		});
+	}
 	
 </script>
 
-{% include 'friend/snippets/send_friend_request.html' %}
 {#% include 'snippets/accept_friend_request.html' %#}
 {#% include 'snippets/decline_friend_request.html' %#}
 {#% include 'snippets/cancel_friend_request.html' %#}
