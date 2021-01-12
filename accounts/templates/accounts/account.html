@@ -107,8 +107,8 @@
 			<div class="card m-2 p-4">
 				<div class="d-flex flex-row align-items-center">
 					<span class="friend-text align-items-center mr-2">Accept Friend Request</span>
-					<span id="id_cancel_{{id}}" class="decline-friend-request material-icons p-1" onclick='triggerDeclineFriendRequest("{{pending_friend_request_id}}")'>cancel</span>
-  					<span id="id_confirm_{{id}}" class="confirm-friend-request material-icons p-1" onclick='triggerAcceptFriendRequest("{{pending_friend_request_id}}")'>check</span>
+					<button id="id_cancel_{{id}}" class=" btn btn-sm btn-danger" onclick='triggerDeclineFriendRequest("{{pending_friend_request_id}}")'>Decline</button>
+  					<button id="id_confirm_{{id}}" class="btn btn-sm btn-success ml-2" onclick='triggerAcceptFriendRequest("{{pending_friend_request_id}}")'>Accept</button>
 				</div>
 			</div>
 			{% endif %}

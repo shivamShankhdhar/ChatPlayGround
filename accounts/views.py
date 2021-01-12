@@ -25,7 +25,8 @@ TEMP_PROFILE_IMAGE_NAME = "temp_profile_image.png"
 
 # import utils 
 from friend.utils import get_friend_request_or_false
-from friend_request_status import FriendRequestStatus
+from friend.friend_request_status import FriendRequestStatus
+from friend.models import FriendList, FriendRequest
 # views
 
 def register_view(request, *args, **kwargs):
@@ -128,9 +129,9 @@ def account_view(request, *args, **kwargs):
         # state tamplate  variables
         is_self = True
         is_friend = False
-        request_sent = False
+        request_sent = FriendRequestStatus.NO_REQUEST_SENT.value
         friend_requests = None
-        
+
         user = request.user
         if user.is_authenticated and user != account:
             is_self = False
@@ -148,7 +149,7 @@ def account_view(request, *args, **kwargs):
                     request_sent = FriendRequestStatus.YOU_SENT_TO_THEM.value    
 
                 else:
-                request_sent = FriendRequestStatus.NO_REQUEST_SENT.value   
+                    request_sent = FriendRequestStatus.NO_REQUEST_SENT.value   
         elif not user.is_authenticated:
             is_self = False
 

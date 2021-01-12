@@ -74,11 +74,11 @@
 					</div>
 				{% else %}
 					{% if account.0 !=  request.user %}
-						<div class="d-flex flex-row friends-text-container p-3">
-							<p class="friends-text m-auto">
+						<div class="">
+							<button class="btn btn-sm btn-danger disable" style="cursor: no-drop;">
 								Not Friends 
-							</p>
-							<i class="far fa-times-circle text-danger"></i>
+							</button>
+							<!-- <i class="far fa-times-circle text-danger"></i> -->
 						</div>
 					{% endif %}
 				{% endif %}
